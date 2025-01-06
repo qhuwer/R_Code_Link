@@ -1,0 +1,28 @@
+# R_Code_Link
+# Aufgabe 3
+# 3.1
+
+iterationen <- 100000 # Anzahl der Simulationen
+N <- 8                # Anzahl der Personen
+counter <- 0          # zählt wie ob jemand sein eigenes Geschenk bekommen hat
+alle_Geschenke <- 1:8 
+
+
+# Simulation durchführen
+for (i in 1:iterationen) {
+  Verteilung <- sample(alle_Geschenke)
+  kein_eigenes_Geschenk <- TRUE
+  
+  for ( j in 1:N) {
+    if (Verteilung [j] == alle_Geschenke [j]){
+      kein_eigenes_Geschenk <- FALSE
+    }
+  }
+  if (kein_eigenes_Geschenk){
+    counter <- counter +1
+  }
+  }
+
+counter/iterationen
+
+  
