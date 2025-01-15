@@ -25,4 +25,56 @@ for (i in 1:iterationen) {
 
 counter/iterationen
 
+#3.2
+
+wichtel_unglück <- function(n, k, iterationen = 1000000) {
+  # Überprüfen, ob Eingaben gültig sind
+  if (n <= 0 || k < 0 || iterationen <= 0) {
+    stop("n, k und iterationen müssen positive Zahlen sein!")
+  }
+  
+  # Zähler für erfolgreiche Fälle
+  erfolgreiche_fälle <- 0
+  
+  # Simulation durchführen
+  for (i in 1:iterationen) {
+    
+    # Geschenke durchnummerieren und mischen
+    verteilung <- sample(1:n)
+    
+    # Zähler einbauen
+    eigene_geschenke <- sum(verteilung == 1:n)
+    
+    # Überprüfe, ob höchstens k Personen ihr eigenes Geschenk erhalten
+    if (eigene_geschenke <= k) {
+    
+        erfolgreiche_fälle <- erfolgreiche_fälle + 1
+    }
+  }
+}
+  # Wahrscheinlichkeit berechnen
+  return(erfolgreiche_fälle / iterationen)
+  
+
+  
+#Aufgabe 3.4
+  
+libary("test_that")
+  
+test_that("Wichtel_unglück_korrekt",{
+    
+    #1 Testfall es dürfen keine negativen Zahlen für n zugelassen werden
+    expect_error(wichtel_unglueck(-5, 10), "Zahlen sollten positiv sein")
+    
+    # 2. Testfall, für n=1 muss k=1 gibt die Wahrscheinlichkeit 1
+    expect_equal(wichtel_unglück(1, 1, 10000), 1)    
+    
+    # 3. Testfall, bei k=0 müss n ziemlich groß sein
+    result <- wichtel_unglueck(100, 0, 10000)
+    expect_true(result > 0.36, result < 0.38)
+    
+    # 4. Testfall, bei n=2 und k=0 ist die einzige Möglichkeit,dass jeder ein 
+    # anderes Geschenk erhält nur der Tausch
+    expect_equal(wichtel_unglueck(2, 0, 10000), 0.5, tolerance = 0.05)
+})
   
