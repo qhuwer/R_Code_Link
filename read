@@ -2,6 +2,7 @@
 # Aufgabe 3
 # 3.1
 
+
 iterationen <- 100000 # Anzahl der Simulationen
 N <- 8                # Anzahl der Personen
 counter <- 0          # zählt wie ob jemand sein eigenes Geschenk bekommen hat
@@ -21,9 +22,10 @@ for (i in 1:iterationen) {
   if (kein_eigenes_Geschenk){
     counter <- counter +1
   }
-  }
+}
 
-counter/iterationen
+Ergebnis <- counter/iterationen
+
 
 #3.2
 
@@ -61,7 +63,7 @@ wichtel_unglück <- function(n, k, iterationen = 1000000) {
   
 libary("test_that")
   
-test_that("Wichtel_unglück_korrekt",{
+testthat("Wichtel_unglück_korrekt",{
     
     #1 Testfall es dürfen keine negativen Zahlen für n zugelassen werden
     expect_error(wichtel_unglueck(-5, 10), "Zahlen sollten positiv sein")
@@ -77,4 +79,48 @@ test_that("Wichtel_unglück_korrekt",{
     # anderes Geschenk erhält nur der Tausch
     expect_equal(wichtel_unglueck(2, 0, 10000), 0.5, tolerance = 0.05)
 })
+    
+# Aufgabe 3.5
+
+# Daten einlesen und unsere Gruppe heraus filtern
+bike_sharing_data <- read.csv("bike_sharing_data_(with_NAs).csv")
+bike_sharing_Data_Gruppe92<- data.frame(subset(bike_sharing_data, group == 92))
+
+#  Fehlende Werte prüfen 
+
+print(colSums(is.na(bike_sharing_Data_Gruppe92)))
+
+# Spalten identifizieren
+numeric_cols <- sapply(bike_sharing_Data_Gruppe92, is.numeric)
+
+# Fehlende Werte in numerischen Spalten mit Mittelwert auffüllen
+bike_sharing_Data_Gruppe92[, numeric_cols] <- lapply(bike_sharing_Data_Gruppe92[, numeric_cols], function(col) {
+  ifelse(is.na(col), mean(col, na.rm = TRUE), col)
+})
+
+# Temperatur von Fahrenheit in Celsius umwandeln
+
+temperatur <- c("min_temperature", "average_temperature", "max_temperature")
+if (all(temperatur %in% colnames(bike_sharing_Data_Gruppe92))) {
+  bike_sharing_Data_Gruppe92[temperatur] <- lapply(bike_sharing_Data_Gruppe92[temperatur], function(temp) {
+    (temp - 32) * 5 / 9
+  })
+}
+# nun müssen die Werte die keinen Sinn machen rausgefiltert werden
+bike_sharing_Data_Gruppe92 <- subset(bike_sharing_Data_Gruppe92, windspeed >= 0 &
+                        min_temperature >= -20 & min_temperature <= 50 &
+                          average_temperature >= -30 & average_temperature <= 50 &
+                          max_temperature >= -30 & max_temperature <= 50 &
+                          count >= 0,  precipitation >= 1)
+
+bike_sharing_Data_Gruppe92$date <- as.Date(bike_sharing_Data_Gruppe92$date)
+bike_sharing_Data_Gruppe92$month <- format(bike_sharing_Data_Gruppe92$date, "day_of_year-da_of_week")
+
+# Jetzt noch den Monat mit den meisten ausleihen berechnen
+
+Zähler_zum_Monatlichen_Ausleihen <- aggregate(count ~ month, data = bike_sharing_Data_Gruppe92, sum)
+max_month <- Zähler_zum_Monatlichen_Ausleihen[which.max(Zähler_zum_Monatlichen_Ausleihen$count), ]
+
+max_month 
   
+
