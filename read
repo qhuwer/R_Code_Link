@@ -111,7 +111,7 @@ bike_sharing_Data_Gruppe92 <- subset(bike_sharing_Data_Gruppe92, windspeed >= 0 
                         min_temperature >= -20 & min_temperature <= 50 &
                           average_temperature >= -30 & average_temperature <= 50 &
                           max_temperature >= -30 & max_temperature <= 50 &
-                          count >= 0,  precipitation >= 1)
+                          count >= 0)
 
 bike_sharing_Data_Gruppe92$date <- as.Date(bike_sharing_Data_Gruppe92$date)
 bike_sharing_Data_Gruppe92$month <- format(bike_sharing_Data_Gruppe92$date, "day_of_year-da_of_week")
